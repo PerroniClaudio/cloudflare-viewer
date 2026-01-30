@@ -1,59 +1,86 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Cloudflare R2 Viewer
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Helper Laravel per visualizzare il contenuto dei bucket Cloudflare R2. Consente di gestire più configurazioni (connessioni) salvate in SQLite e di navigare i bucket con un’interfaccia tipo file system (cartelle, file, download).
 
-## About Laravel
+## Requisiti
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP (versione compatibile con il progetto)
+- Composer
+- Node.js + pnpm
+- SQLite
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup locale
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Installa le dipendenze PHP:
 
-## Learning Laravel
+```
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+2. Crea il file ambiente:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+cp .env.example .env
+php artisan key:generate
+```
 
-## Laravel Sponsors
+3. Crea il database SQLite:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+mkdir -p database
+[ -f database/database.sqlite ] || touch database/database.sqlite
+```
 
-### Premium Partners
+4. Aggiorna `.env` per usare SQLite:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```
+DB_CONNECTION=sqlite
+DB_DATABASE=/percorso/assoluto/al/progetto/database/database.sqlite
+```
 
-## Contributing
+5. Esegui le migration:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+php artisan migrate
+```
 
-## Code of Conduct
+6. Installa dipendenze frontend e avvia Vite:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+npm install
+npm run dev
+```
 
-## Security Vulnerabilities
+## Avvio
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Avvia l’app con Laravel Herd (automatico) oppure:
 
-## License
+```
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Configurare una nuova connessione R2
+
+Vai su **Connessioni R2** e crea una nuova connessione inserendo:
+
+- Nome connessione (a piacere)
+- Colore in hex (es. `#ff00aa`)
+- Access Key ID
+- Secret Access Key
+- Endpoint (es. `https://<account-id>.r2.cloudflarestorage.com`)
+- Nome del bucket
+
+Dopo il salvataggio, apri la connessione dalla lista per navigare cartelle e file.
+
+## Funzionalità attuali
+
+- CRUD connessioni R2 (SQLite)
+- Browser del bucket con breadcrumb
+- Ricerca per prefisso (nome)
+- Ordinamento per nome, dimensione e data
+- Download file
+
+## Note
+
+- La ricerca è basata su prefisso (limitazione del protocollo S3/R2).
+- Per il download è necessario il driver S3 di Laravel e l’SDK AWS.
