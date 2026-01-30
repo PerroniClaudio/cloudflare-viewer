@@ -10,9 +10,9 @@
         <label for="color" class="label">
             <span class="label-text">Colore (hex)</span>
         </label>
-        <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-lg border border-base-300" style="background-color: {{ old('color', $connection->color ?? '#000000') }};"></div>
-            <input id="color" name="color" type="text" class="input input-bordered w-full" value="{{ old('color', $connection->color ?? '#000000') }}" placeholder="#ff00aa" required>
+        <div class="flex items-center gap-3" data-color-field>
+            <input id="color_picker" type="color" class="h-10 w-12 rounded-lg border border-base-300" value="{{ old('color', $connection->color ?? '#000000') }}" data-color-picker>
+            <input id="color" name="color" type="text" class="input input-bordered w-full" value="{{ old('color', $connection->color ?? '#000000') }}" placeholder="#ff00aa" required data-color-input>
         </div>
         <p class="text-xs opacity-70">Usa un valore esadecimale valido.</p>
     </div>
